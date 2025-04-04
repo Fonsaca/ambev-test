@@ -36,36 +36,14 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
         /// 10 or more items = 20% discount
         /// more than 4 items = 10% discount
         /// </summary>
-        public decimal DiscountPercentage
-        {
-            get
-            {
-                var maxItemQty = Items
-                    .Where(item => !item.IsCanceled)
-                    .Max(item => item.Quantity);
+        public decimal DiscountPercentage { get; set; }
 
-                if (maxItemQty >= 10)
-                    return 0.2m;
-                else if (maxItemQty > 4)
-                    return 0.1m;
-                return 0;
-            }
-        }
 
         /// <summary>
         /// Total amount of the sale
         /// </summary>
-        public decimal TotalAmount
-        {
-            get
-            {
-                var totalAmountBeforeDiscount = Items
-                    .Where(item => !item.IsCanceled)
-                    .Sum(o => o.TotalAmount);
+        public decimal TotalAmount { get; set; }
 
-                return totalAmountBeforeDiscount * (1.0m - DiscountPercentage);
-            }
-        }
 
         /// <summary>
         /// Canceled status of a sale
@@ -107,8 +85,12 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
         {
             items.ForEach(UpdateItem);
 
+            this.SetTotalAmount();
+
             if (Items.TrueForAll(i => i.IsCanceled))
+            {
                 this.SetCanceled();
+            }
         }
 
         /// <summary>
@@ -145,6 +127,44 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
             }
 
         }
+
+        /// <summary>
+        /// Set total amount
+        /// Total amount of items not canceled minus the discount
+        /// </summary>
+        public void SetTotalAmount()
+        {
+            this.SetDiscountPercentage();
+
+            var totalAmountBeforeDiscount = Items
+                    .Where(item => !item.IsCanceled)
+                    .Sum(o => o.TotalAmount);
+
+            TotalAmount = totalAmountBeforeDiscount * (1.0m - DiscountPercentage);
+        }
+
+        /// <summary>
+        /// Set Discount percentage
+        /// 10 or more items = 20% discount
+        /// more than 4 items = 10% discount
+        /// </summary>
+        public void SetDiscountPercentage()
+        {
+            var maxItemQty = Items
+                    .Where(item => !item.IsCanceled)
+                    .Max(item => item.Quantity);
+
+            decimal discount = 0.0m;
+
+            if (maxItemQty >= 10)
+                discount = 0.2m;
+            else if (maxItemQty > 4)
+                discount = 0.1m;
+
+            DiscountPercentage = discount;
+        }
+
+        
 
     }
 }

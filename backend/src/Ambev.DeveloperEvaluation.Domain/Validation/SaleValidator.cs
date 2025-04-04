@@ -31,6 +31,10 @@ namespace Ambev.DeveloperEvaluation.Domain.Validation
             RuleForEach(sale => sale.Items)
                 .SetValidator(new SaleItemValidator());
 
+            RuleFor(sale => sale)
+                .Must(sale => !sale.IsCanceled || sale.TotalAmount > 0.0m)
+                .WithMessage("Sale total amount was not calculated correctly");
+
         }
     }
 }

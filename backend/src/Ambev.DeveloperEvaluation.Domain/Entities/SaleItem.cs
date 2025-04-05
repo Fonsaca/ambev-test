@@ -47,6 +47,12 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
         public DateTime? UpdatedAt { get; set; }
 
 
+        /// <summary>
+        /// Sale of the Item
+        /// </summary>
+        public Sale Sale { get; set; }
+
+
 
         /// <summary>
         /// Mark the item as canceled

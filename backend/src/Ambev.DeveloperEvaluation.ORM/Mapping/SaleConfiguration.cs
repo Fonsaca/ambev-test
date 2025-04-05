@@ -34,7 +34,7 @@ public class SaleConfiguration : IEntityTypeConfiguration<Sale>
         builder.Property(x => x.UpdatedAt);
 
         builder.HasMany(x => x.Items)
-            .WithOne()
+            .WithOne(x => x.Sale)
             .HasForeignKey("SaleId");
     }
 }

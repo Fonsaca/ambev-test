@@ -1,8 +1,7 @@
-﻿namespace Ambev.DeveloperEvaluation.Application.Sales.GetSale
+﻿namespace Ambev.DeveloperEvaluation.Application.Sales.UpdateSale
 {
-    public class GetSaleResult
+    public class UpdateSaleResult
     {
-
         /// <summary>
         /// Sale Id
         /// </summary>
@@ -41,13 +40,15 @@
         /// <summary>
         /// Sale items
         /// </summary>
-        public List<GetSaleItemResult> Items { get; set; }
+        public List<UpdateSaleItemResult> Items { get; set; }
 
     }
 
-    public class GetSaleItemResult
+    public class UpdateSaleItemResult
     {
+
         public Guid Id { get; set; }
+
         /// <summary>
         /// Item product ID
         /// </summary>

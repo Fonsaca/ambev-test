@@ -55,11 +55,11 @@ public class Program
             var app = builder.Build();
             app.UseMiddleware<ValidationExceptionMiddleware>();
 
-            if (app.Environment.IsDevelopment())
-            {
+            //if (app.Environment.IsDevelopment())
+            //{
                 app.UseSwagger();
                 app.UseSwaggerUI();
-            }
+            //}
 
             app.UseHttpsRedirection();
 
@@ -75,6 +75,7 @@ public class Program
         catch (Exception ex)
         {
             Log.Fatal(ex, "Application terminated unexpectedly");
+            throw;
         }
         finally
         {

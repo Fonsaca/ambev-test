@@ -72,6 +72,23 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
             UpdatedAt = DateTime.UtcNow;
         }
 
+        /// <summary>
+        /// Set new entity properties values
+        /// </summary>
+        /// <param name="updateSale">Sale entity with new values</param>
+        public void Update(Sale updateSale)
+        {
+            this.Branch = updateSale.Branch;
+            this.UpdateItems(updateSale.Items);
+            this.UpdatedAt = DateTime.UtcNow;
+
+            if (Items.TrueForAll(i => i.IsCanceled))
+            {
+                this.SetCanceled();
+            }
+
+            this.SetTotalAmount();
+        }
 
         /// <summary>
         /// Update sale items
@@ -81,16 +98,19 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
         /// - Updates the UpdateAt date
         /// </summary>
         /// <param name="items">New list of items</param>
-        public void UpdateItems(List<SaleItem> items)
+        private void UpdateItems(List<SaleItem> items)
         {
             items.ForEach(UpdateItem);
 
-            this.SetTotalAmount();
+            var itemsToCancel = Items
+                .Where(i => !i.IsCanceled)
+                .Where(i => !items.Exists(x => x.ProductId == i.ProductId));
 
-            if (Items.TrueForAll(i => i.IsCanceled))
+            foreach (var itemToCancel in itemsToCancel)
             {
-                this.SetCanceled();
+                itemToCancel.SetCanceled();
             }
+
         }
 
         /// <summary>
@@ -103,8 +123,6 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
         /// <param name="items">New item</param>
         private void UpdateItem(SaleItem item)
         {
-            UpdatedAt = DateTime.UtcNow;
-
             var existingItem = Items.FirstOrDefault(i => i.ProductId == item.ProductId && !i.IsCanceled);
 
             if (existingItem == null)
@@ -112,6 +130,10 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
                 Items.Add(item);
                 return;
             }
+
+            existingItem.ProductName = item.ProductName;
+            existingItem.UnitPrice = item.UnitPrice;
+            existingItem.Quantity = item.Quantity;
 
             if (item.Quantity < existingItem.Quantity)
             {
@@ -123,7 +145,7 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
             }
             else if (item.Quantity > existingItem.Quantity)
             {
-                item.Quantity += existingItem.Quantity;
+                existingItem.Quantity = item.Quantity;
             }
 
         }

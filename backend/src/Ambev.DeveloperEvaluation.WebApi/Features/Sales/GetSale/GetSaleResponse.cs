@@ -48,6 +48,11 @@
     public class GetSaleItemResponse
     {
         /// <summary>
+        /// Sale item Id
+        /// </summary>
+        public Guid Id { get; set; }
+
+        /// <summary>
         /// Item product ID
         /// </summary>
         public int ProductId { get; set; }

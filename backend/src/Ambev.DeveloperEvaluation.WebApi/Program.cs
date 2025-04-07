@@ -36,6 +36,8 @@ public class Program
                 )
             );
 
+         
+
             builder.Services.AddJwtAuthentication(builder.Configuration);
 
             builder.RegisterDependencies();
@@ -69,6 +71,12 @@ public class Program
             app.UseBasicHealthChecks();
 
             app.MapControllers();
+
+            using (var serviceScope = app.Services.CreateScope())
+            {
+                var context = serviceScope.ServiceProvider.GetRequiredService<DefaultContext>();
+                context.Database.Migrate();
+            }
 
             app.Run();
         }

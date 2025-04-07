@@ -34,4 +34,4 @@ When updating a sale the decrease or cancelation of an item reflects in a record
    docker compose up -d
 ```
 - Open the API swagger at http://localhost/swagger/index.html
-- See the details of the api at [Sales API](/.doc/sales-api.md)  
+- You can find the details of the api in [Swagger](http://localhost/swagger/index.html)  

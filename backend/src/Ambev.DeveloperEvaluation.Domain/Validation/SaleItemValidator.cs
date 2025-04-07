@@ -10,6 +10,9 @@ namespace Ambev.DeveloperEvaluation.Domain.Validation
 {
     public class SaleItemValidator : AbstractValidator<SaleItem>
     {
+
+        public const short MAX_IDENTICAL_ITEMS = 20;
+
         public SaleItemValidator()
         {
 
@@ -29,7 +32,9 @@ namespace Ambev.DeveloperEvaluation.Domain.Validation
                 .Must(qty => qty > 0)
                 .WithMessage("Item quantity must be a positive number");
 
-
+            RuleFor(item => item.Quantity)
+                .Must(qty => qty < MAX_IDENTICAL_ITEMS)
+                .WithMessage($"The sale must have at most {MAX_IDENTICAL_ITEMS} identical items");
 
         }
     }

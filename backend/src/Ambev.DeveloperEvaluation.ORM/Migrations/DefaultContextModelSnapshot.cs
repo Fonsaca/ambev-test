@@ -85,7 +85,7 @@ namespace Ambev.DeveloperEvaluation.ORM.Migrations
                     b.Property<short>("Quantity")
                         .HasColumnType("smallint");
 
-                    b.Property<Guid?>("SaleId")
+                    b.Property<Guid>("SaleId")
                         .HasColumnType("uuid");
 
                     b.Property<decimal>("UnitPrice")
@@ -152,9 +152,13 @@ namespace Ambev.DeveloperEvaluation.ORM.Migrations
 
             modelBuilder.Entity("Ambev.DeveloperEvaluation.Domain.Entities.SaleItem", b =>
                 {
-                    b.HasOne("Ambev.DeveloperEvaluation.Domain.Entities.Sale", null)
+                    b.HasOne("Ambev.DeveloperEvaluation.Domain.Entities.Sale", "Sale")
                         .WithMany("Items")
-                        .HasForeignKey("SaleId");
+                        .HasForeignKey("SaleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Sale");
                 });
 
             modelBuilder.Entity("Ambev.DeveloperEvaluation.Domain.Entities.Sale", b =>

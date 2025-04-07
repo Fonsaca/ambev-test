@@ -146,6 +146,7 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
             else if (item.Quantity > existingItem.Quantity)
             {
                 existingItem.Quantity = item.Quantity;
+                existingItem.UpdatedAt = DateTime.UtcNow;
             }
 
         }

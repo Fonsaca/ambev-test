@@ -1,6 +1,7 @@
 ﻿using Ambev.DeveloperEvaluation.Application.Sales.GetSale;
 using Ambev.DeveloperEvaluation.Domain.Entities;
 using Ambev.DeveloperEvaluation.Domain.Repositories;
+using Ambev.DeveloperEvaluation.Domain.Validation;
 using AutoMapper;
 using FluentValidation;
 using MediatR;
@@ -33,14 +34,21 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.UpdateSale
             if (!validationResult.IsValid)
                 throw new ValidationException(validationResult.Errors);
 
+            var updateSale = _mapper.Map<Sale>(request);
+
 
             var sale = await _saleRepository.GetByIdAsync(request.Id, cancellationToken);
             if (sale == null)
                 throw new KeyNotFoundException($"Sale with ID {request.Id} not found");
 
-            var updateSale = _mapper.Map<Sale>(request);
-
             sale.Update(updateSale);
+
+            var saleValidator = new SaleValidator();
+            var saleValidationResult = await saleValidator.ValidateAsync(sale, cancellationToken);
+
+            if (!saleValidationResult.IsValid)
+                throw new ValidationException(saleValidationResult.Errors);
+
 
             var updatedSale = await _saleRepository.UpdateAsync(sale, cancellationToken);
 

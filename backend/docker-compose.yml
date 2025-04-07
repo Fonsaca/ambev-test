@@ -3,8 +3,7 @@ version: '3.8'
 services:
   ambev.developerevaluation.database:
     container_name: ambev_developer_evaluation_database
-    image: postgres:latest
-
+    image: postgres:17
     environment:
       POSTGRES_DB: DeveloperEvaluation
       POSTGRES_USER: sa
@@ -12,13 +11,23 @@ services:
     ports:
       - "5432:5432"
     restart: unless-stopped
+    networks:
+      - ambev
 
   ambev.developerevaluation.webapi:
     container_name: ambev_developer_evaluation_webapi
     image: ${DOCKER_REGISTRY-}ambevdeveloperevaluationwebapi
+    depends_on:
+      - ambev.developerevaluation.database
     build:
       context: .
       dockerfile: src/Ambev.DeveloperEvaluation.WebApi/Dockerfile
     ports:
       - "80:8080"
       - "443:8081"
+    networks:
+      - ambev
+
+networks:
+  ambev:
+    driver: bridge
